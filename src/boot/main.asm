@@ -1,8 +1,8 @@
 [org 0x7c00]
+[bits 16]
 
 mov si, CHEESEOS_INTRO
 call print
-
 
 
 mov al, 1
@@ -15,7 +15,7 @@ jmp $
 
 
 
-
+; multiple files broke print somehow so we will keep it here
 print:
     pusha
     str_loop:
@@ -32,6 +32,7 @@ print:
         jmp str_loop
 
 
+; for documentation see documentation/readDisk.md
 readDisk:
     pusha
     mov ah, 0x02
@@ -62,7 +63,7 @@ readDisk:
 
 
 TEST_STR: db "you are in the second sector", 0x0a, 0x0d, 0
-CHEESEOS_INTRO: db "CheeseOS on Top - CheeseOS Unstable  Alpha 0.0.1", 0x0a, 0x0d, 0
+CHEESEOS_INTRO: db "CheeseOS on Top - CheeseOS Unstable Alpha 0.0.1", 0x0a, 0x0d, 0
 
 ; error messages
 DISK_ERR: db "Error reading Disk.", 0x0a, 0x0d, 0
@@ -79,5 +80,3 @@ dw 0xaa55
 
 
 times 512 db 0
-
-
