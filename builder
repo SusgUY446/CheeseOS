@@ -1,9 +1,5 @@
 #!/bin/bash
 
-
-
-
-
 # CheeseOS Builder Script
 # Used for compiling CheeseOS
 # to clear build run ./builder clear
@@ -28,18 +24,18 @@ if [ "$1" = "build" ]; then
     cd ../..
 
     echo "Done Building"
-fi
-
-if [ "$1" = "clear" ]; then
+elif [ "$1" = "clear" ]; then
     echo "Cleared system from build files"
     rm -r build
-fi 
-
-
-if [ "$1" = "version" ]; then
+elif [ "$1" = "version" ] || [ "$1" = "-v" ]; then
     echo "Cheese Builder Alpha 0.0.1"
-fi
-
-if [ "$1" = "-v" ]; then
-    echo "Cheese Builder Alpha 0.0.1"
+elif [ "$1" = "help" ]; then
+    echo "Usage: ./builder [command]"
+    echo "Commands:"
+    echo "  build    - Build CheeseOS"
+    echo "  clear    - Clear build files"
+    echo "  version  - Show Cheese Builder version"
+    echo "  help     - Show this help message"
+else
+    echo "Command '$1' not found. Run './builder help' for help."
 fi

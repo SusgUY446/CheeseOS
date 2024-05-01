@@ -1,6 +1,11 @@
 [org 0x7c00]
 [bits 16]
 
+
+
+
+
+
 mov si, CHEESEOS_INTRO
 call print
 
@@ -62,7 +67,7 @@ readDisk:
 
 
 
-TEST_STR: db "you are in the second sector", 0x0a, 0x0d, 0
+TEST_STR: db "you are in the second sector of the disk", 0x0a, 0x0d, 0
 CHEESEOS_INTRO: db "CheeseOS on Top - CheeseOS Unstable Alpha 0.0.1", 0x0a, 0x0d, 0
 
 ; error messages
