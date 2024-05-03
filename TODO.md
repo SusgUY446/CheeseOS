@@ -1,0 +1,4 @@
+- Write kernel,
+- C standart Libary
+- Shell
+- C Compiler

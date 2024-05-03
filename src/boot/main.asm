@@ -1,11 +1,39 @@
-[org 0x7c00]
-[bits 16]
+org 0x7c00
+bits 16 ; 16 bit real mode
+
+%DEFINE ENDL 0x0a, 0x0d ; sets endl (endline) to new line chraracters. (easier to type)
 
 
+section .text
+    global main
+
+main:
 
 
+; init
+cli
+jmp 0x0000:ZeroSeg 
+
+ZeroSeg:
+    xor ax, ax ; set ax to 0. 1 bit smaller then mov
+    mov ss, ax
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    mov sp, main
+    cld
+
+sti
 
 
+push ax
+xor ax, ax
+mov dl, 0x80
+int 0x13
+pop ax
+
+; Print CheeseOS Intro To Screen 
 mov si, CHEESEOS_INTRO
 call print
 
@@ -13,7 +41,8 @@ call print
 mov al, 1
 mov cl, 2
 call readDisk
-jmp test_label
+
+call printh
 
 jmp $
 
@@ -21,6 +50,7 @@ jmp $
 
 
 ; multiple files broke print somehow so we will keep it here
+
 print:
     pusha
     str_loop:
@@ -35,6 +65,22 @@ print:
         int 0x10
         add si, 1
         jmp str_loop
+
+
+; printh - print hex
+printh:
+    mov si, HEX_PATTERN
+
+    mov bx, dx
+    shr bx, 12
+    mov [HEX_PATTERN + 2], bl 
+
+
+
+    call print
+    ret
+
+HEX_PATTERN: db "0x****", 0
 
 
 ; for documentation see documentation/readDisk.md
@@ -67,21 +113,16 @@ readDisk:
 
 
 
-TEST_STR: db "you are in the second sector of the disk", 0x0a, 0x0d, 0
-CHEESEOS_INTRO: db "CheeseOS on Top - CheeseOS Unstable Alpha 0.0.1", 0x0a, 0x0d, 0
+CHEESEOS_INTRO: db "CheeseOS on Top - CheeseOS Unstable Alpha 0.0.1", ENDL, 0
+
+
 
 ; error messages
-DISK_ERR: db "Error reading Disk.", 0x0a, 0x0d, 0
-
-test_label:
-    mov si, TEST_STR
-    call print
-
+DISK_ERR: db "Error reading Disk.", ENDL, 0
 
 ; mgic byte and padding
 times 510-($-$$) db 0
 dw 0xaa55
-
 
 
 times 512 db 0

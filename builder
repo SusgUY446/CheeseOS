@@ -2,7 +2,7 @@
 
 # CheeseOS Builder Script
 # Used for compiling CheeseOS
-# to clear build run ./builder clear
+
 
 if [ "$1" = "build" ]; then
     echo "CheeseOS Builder"
@@ -33,9 +33,22 @@ elif [ "$1" = "help" ]; then
     echo "Usage: ./builder [command]"
     echo "Commands:"
     echo "  build    - Build CheeseOS"
+    echo "  run      - Run CheeseOS with QEMU"
     echo "  clear    - Clear build files"
     echo "  version  - Show Cheese Builder version"
     echo "  help     - Show this help message"
+    
+elif [ "$1" = "" ]; then
+    echo "Usage: ./builder [command]"
+    echo "Commands:"
+    echo "  build    - Build CheeseOS"
+    echo "  run      - Run CheeseOS with QEMU"
+    echo "  clear    - Clear build files"
+    echo "  version  - Show Cheese Builder version"
+    echo "  help     - Show this help message"
+
+elif [ "$1" = "run" ]; then
+    qemu-system-x86_64 -drive format=raw,file=build/main.bin
 else
     echo "Command '$1' not found. Run './builder help' for help."
 fi

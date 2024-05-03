@@ -2,6 +2,9 @@
 
 ## Building 
 run ./builder build
+then ./builder run
+
+
 
 ## Contributing 
 fork, commit your code to the fork, open pr, wait to get approved
