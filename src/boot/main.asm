@@ -21,7 +21,7 @@ ZeroSeg:
     mov es, ax
     mov fs, ax
     mov gs, ax
-    mov sp, main
+    mov sp, main ; set stackpointer to main
     cld
 
 sti
@@ -42,6 +42,8 @@ mov al, 1
 mov cl, 2
 call readDisk
 
+
+mov dx, 0x1341
 call printh
 
 jmp $
@@ -73,15 +75,16 @@ printh:
 
     mov bx, dx
     shr bx, 12
+    mov bx, [bx + HEX_TABLE]
     mov [HEX_PATTERN + 2], bl 
 
-
+    mov bx, dx
 
     call print
     ret
 
 HEX_PATTERN: db "0x****", 0
-
+HEX_TABLE: db "0123456789abcdef", 0
 
 ; for documentation see documentation/readDisk.md
 readDisk:
@@ -123,6 +126,3 @@ DISK_ERR: db "Error reading Disk.", ENDL, 0
 ; mgic byte and padding
 times 510-($-$$) db 0
 dw 0xaa55
-
-
-times 512 db 0

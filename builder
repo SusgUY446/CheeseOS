@@ -49,6 +49,29 @@ elif [ "$1" = "" ]; then
 
 elif [ "$1" = "run" ]; then
     qemu-system-x86_64 -drive format=raw,file=build/main.bin
+
+elif [ "$1" = "build-run" ]; then
+    echo "CheeseOS Builder"
+
+    # Create build dir
+    echo "Creating Build Directory"
+    mkdir -p build
+
+    # Change directory to src/boot/
+    echo "Entering src/boot/ directory"
+    cd src/boot/
+
+    # Assemble main.asm
+    echo "Assembling main.asm"
+    nasm -f bin main.asm -o ../../build/main.bin
+
+    # Change back to the root directory
+    echo "Returning to the root directory"
+    cd ../..
+
+    echo "Done Building"
+
+    qemu-system-x86_64 -drive format=raw,file=build/main.bin
 else
     echo "Command '$1' not found. Run './builder help' for help."
 fi
