@@ -2,3 +2,4 @@
 - C standart Libary
 - Shell
 - C Compiler
+- Nano Terminal Editor
