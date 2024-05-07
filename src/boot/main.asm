@@ -118,7 +118,7 @@ readDisk:
 
 
 
-CHEESEOS_INTRO: db "CheeseOS on Top - CheeseOS Stable Alpha 0.0.2", ENDL, 0
+CHEESEOS_INTRO: db "CheeseOS on Top - CheeseOS Unstable Alpha 0.0.2", ENDL, 0
 
 
 
