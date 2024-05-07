@@ -38,9 +38,7 @@ mov si, CHEESEOS_INTRO
 call print
 
 
-mov al, 1
-mov cl, 2
-call readDisk
+
 
 
 mov dx, 0x1341
@@ -69,7 +67,7 @@ print:
         jmp str_loop
 
 
-; printh - print hex
+; print hex
 printh:
     mov si, HEX_PATTERN
 
@@ -78,7 +76,11 @@ printh:
     mov bx, [bx + HEX_TABLE]
     mov [HEX_PATTERN + 2], bl 
 
-    mov bx, dx
+    mov bx, dx    
+    and bx, 0x000f     
+    shr bx, 8
+    mov bx, [bx + HEX_TABLE]
+    mov [HEX_PATTERN + 2], bl
 
     call print
     ret
@@ -116,7 +118,7 @@ readDisk:
 
 
 
-CHEESEOS_INTRO: db "CheeseOS on Top - CheeseOS Unstable Alpha 0.0.1", ENDL, 0
+CHEESEOS_INTRO: db "CheeseOS on Top - CheeseOS Stable Alpha 0.0.2", ENDL, 0
 
 
 
