@@ -3,11 +3,10 @@
 # CheeseOS Builder Script
 # Used for compiling CheeseOS
 
-
 if [ "$1" = "build" ]; then
     echo "CheeseOS Builder"
 
-    # Create build dir
+    # Create build directory
     echo "Creating Build Directory"
     mkdir -p build
 
@@ -15,13 +14,24 @@ if [ "$1" = "build" ]; then
     echo "Entering src/boot/ directory"
     cd src/boot/
 
-    # Assemble main.asm
-    echo "Assembling main.asm"
-    nasm -f bin main.asm -o ../../build/main.bin
+    # Assemble bootloader
+    echo "Assembling bootloader"
+    nasm -f bin main.asm -o ../../build/bootloader.bin
+
+    # Change directory to src/kernel/
+    echo "Entering src/kernel/ directory"
+    cd ../kernel/
+
+    # Assemble kernel
+    echo "Assembling kernel"
+    nasm -f bin kernel.asm -o ../../build/kernel.bin
 
     # Change back to the root directory
     echo "Returning to the root directory"
-    cd ../..
+    cd ../../
+
+    # Combine bootloader and kernel into a single binary
+    cat build/bootloader.bin build/kernel.bin > build/cheeseos.bin
 
     echo "Done Building"
 elif [ "$1" = "clear" ]; then
@@ -36,8 +46,7 @@ elif [ "$1" = "help" ]; then
     echo "  run      - Run CheeseOS with QEMU"
     echo "  clear    - Clear build files"
     echo "  version  - Show Cheese Builder version"
-    echo "  help     - Show this help message"
-    
+    echo "  help     - Show this help message"    
 elif [ "$1" = "" ]; then
     echo "Usage: ./builder [command]"
     echo "Commands:"
@@ -46,14 +55,12 @@ elif [ "$1" = "" ]; then
     echo "  clear    - Clear build files"
     echo "  version  - Show Cheese Builder version"
     echo "  help     - Show this help message"
-
 elif [ "$1" = "run" ]; then
-    qemu-system-x86_64 -drive format=raw,file=build/main.bin
-
+    qemu-system-x86_64 -drive format=raw,file=build/cheeseos.bin
 elif [ "$1" = "build-run" ]; then
     echo "CheeseOS Builder"
 
-    # Create build dir
+    # Create build directory
     echo "Creating Build Directory"
     mkdir -p build
 
@@ -61,17 +68,28 @@ elif [ "$1" = "build-run" ]; then
     echo "Entering src/boot/ directory"
     cd src/boot/
 
-    # Assemble main.asm
-    echo "Assembling main.asm"
-    nasm -f bin main.asm -o ../../build/main.bin
+    # Assemble bootloader
+    echo "Assembling bootloader"
+    nasm -f bin main.asm -o ../../build/bootloader.bin
+
+    # Change directory to src/kernel/
+    echo "Entering src/kernel/ directory"
+    cd ../kernel/
+
+    # Assemble kernel
+    echo "Assembling kernel"
+    nasm -f bin kernel.asm -o ../../build/kernel.bin
 
     # Change back to the root directory
     echo "Returning to the root directory"
-    cd ../..
+    cd ../../
+
+    # Combine bootloader and kernel into a single binary
+    cat build/bootloader.bin build/kernel.bin > build/cheeseos.bin
 
     echo "Done Building"
 
-    qemu-system-x86_64 -drive format=raw,file=build/main.bin
+    qemu-system-x86_64 -drive format=raw,file=build/cheeseos.bin
 else
     echo "Command '$1' not found. Run './builder help' for help."
 fi

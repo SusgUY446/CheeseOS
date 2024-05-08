@@ -67,26 +67,7 @@ print:
         jmp str_loop
 
 
-; print hex
-printh:
-    mov si, HEX_PATTERN
 
-    mov bx, dx
-    shr bx, 12
-    mov bx, [bx + HEX_TABLE]
-    mov [HEX_PATTERN + 2], bl 
-
-    mov bx, dx    
-    and bx, 0x000f     
-    shr bx, 8
-    mov bx, [bx + HEX_TABLE]
-    mov [HEX_PATTERN + 2], bl
-
-    call print
-    ret
-
-HEX_PATTERN: db "0x****", 0
-HEX_TABLE: db "0123456789abcdef", 0
 
 ; for documentation see documentation/readDisk.md
 readDisk:
