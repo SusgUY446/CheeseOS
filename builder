@@ -3,37 +3,50 @@
 # CheeseOS Builder Script
 # Used for compiling CheeseOS
 
-if [ "$1" = "build" ]; then
-    echo "CheeseOS Builder"
+function build_floppy_image() {
+    echo "Building floppy image..."
+    dd if=/dev/zero of=build/main_floppy.img bs=512 count=2880
+    mkfs.fat -F 12 -n "NBOS" build/main_floppy.img
+    dd if=build/bootloader.bin of=build/main_floppy.img conv=notrunc
+    mcopy -i build/main_floppy.img build/kernel.bin "::kernel.bin"
+    echo "Floppy image built."
+}
 
-    # Create build directory
-    echo "Creating Build Directory"
+function assemble_bootloader() {
+    echo "Assembling bootloader..."
+    nasm -f bin src/boot/main.asm -o build/bootloader.bin
+    echo "Bootloader assembled."
+}
+
+function assemble_kernel() {
+    echo "Assembling kernel..."
+    nasm -f bin src/kernel/kernel.asm -o build/kernel.bin
+    echo "Kernel assembled."
+}
+
+function create_build_dir() {
+    echo "Creating build directory..."
     mkdir -p build
+}
 
-    # Change directory to src/boot/
-    echo "Entering src/boot/ directory"
-    cd src/boot/
+function build() {
+    create_build_dir
+    assemble_bootloader
+    assemble_kernel
+    build_floppy_image
+    echo "CheeseOS built successfully."
+}
 
-    # Assemble bootloader
-    echo "Assembling bootloader"
-    nasm -f bin main.asm -o ../../build/bootloader.bin
+function run() {
+    echo "Running CheeseOS..."
+    qemu-system-x86_64 -drive format=raw,file=build/main_floppy.img
+}
 
-    # Change directory to src/kernel/
-    echo "Entering src/kernel/ directory"
-    cd ../kernel/
-
-    # Assemble kernel
-    echo "Assembling kernel"
-    nasm -f bin kernel.asm -o ../../build/kernel.bin
-
-    # Change back to the root directory
-    echo "Returning to the root directory"
-    cd ../../
-
-    # Combine bootloader and kernel into a single binary
-    cat build/bootloader.bin build/kernel.bin > build/cheeseos.bin
-
-    echo "Done Building"
+# Main script logic
+if [ "$1" = "build" ]; then
+    build
+elif [ "$1" = "run" ]; then
+    run
 elif [ "$1" = "clear" ]; then
     echo "Cleared system from build files"
     rm -r build
@@ -46,50 +59,7 @@ elif [ "$1" = "help" ]; then
     echo "  run      - Run CheeseOS with QEMU"
     echo "  clear    - Clear build files"
     echo "  version  - Show Cheese Builder version"
-    echo "  help     - Show this help message"    
-elif [ "$1" = "" ]; then
-    echo "Usage: ./builder [command]"
-    echo "Commands:"
-    echo "  build    - Build CheeseOS"
-    echo "  run      - Run CheeseOS with QEMU"
-    echo "  clear    - Clear build files"
-    echo "  version  - Show Cheese Builder version"
     echo "  help     - Show this help message"
-elif [ "$1" = "run" ]; then
-    qemu-system-x86_64 -drive format=raw,file=build/cheeseos.bin
-elif [ "$1" = "build-run" ]; then
-    echo "CheeseOS Builder"
-
-    # Create build directory
-    echo "Creating Build Directory"
-    mkdir -p build
-
-    # Change directory to src/boot/
-    echo "Entering src/boot/ directory"
-    cd src/boot/
-
-    # Assemble bootloader
-    echo "Assembling bootloader"
-    nasm -f bin main.asm -o ../../build/bootloader.bin
-
-    # Change directory to src/kernel/
-    echo "Entering src/kernel/ directory"
-    cd ../kernel/
-
-    # Assemble kernel
-    echo "Assembling kernel"
-    nasm -f bin kernel.asm -o ../../build/kernel.bin
-
-    # Change back to the root directory
-    echo "Returning to the root directory"
-    cd ../../
-
-    # Combine bootloader and kernel into a single binary
-    cat build/bootloader.bin build/kernel.bin > build/cheeseos.bin
-
-    echo "Done Building"
-
-    qemu-system-x86_64 -drive format=raw,file=build/cheeseos.bin
 else
     echo "Command '$1' not found. Run './builder help' for help."
 fi
