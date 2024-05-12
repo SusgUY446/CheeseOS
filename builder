@@ -7,8 +7,8 @@ function build_floppy_image() {
     echo "Building floppy image..."
     dd if=/dev/zero of=build/main_floppy.img bs=512 count=2880
     mkfs.fat -F 12 -n "NBOS" build/main_floppy.img
-    dd if=build/bootloader.bin of=build/main_floppy.img conv=notrunc
-    mcopy -i build/main_floppy.img build/kernel.bin "::kernel.bin"
+    dd if=build/bootloader.bin of=build/main_floppy.img conv=notrunc bs=512 seek=0
+    dd if=build/kernel.bin of=build/main_floppy.img conv=notrunc bs=512 seek=1
     echo "Floppy image built."
 }
 
