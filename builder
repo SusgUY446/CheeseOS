@@ -6,7 +6,7 @@
 function build_floppy_image() {
     echo "Building floppy image..."
     dd if=/dev/zero of=build/main_floppy.img bs=512 count=2880
-    mkfs.fat -F 12 -n "NBOS" build/main_floppy.img
+    mkfs.fat -F 12 -n "CHOS" build/main_floppy.img
     dd if=build/bootloader.bin of=build/main_floppy.img conv=notrunc bs=512 seek=0
     dd if=build/kernel.bin of=build/main_floppy.img conv=notrunc bs=512 seek=1
     echo "Floppy image built."
@@ -49,7 +49,7 @@ elif [ "$1" = "run" ]; then
     run
 elif [ "$1" = "clear" ]; then
     echo "Cleared system from build files"
-    rm -r build
+    rm -r build/*
 elif [ "$1" = "version" ] || [ "$1" = "-v" ]; then
     echo "Cheese Builder Alpha 0.0.1"
 elif [ "$1" = "help" ]; then
