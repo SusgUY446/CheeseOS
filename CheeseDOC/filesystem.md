@@ -4,7 +4,7 @@
 
 ## Layout
 ```
-root/
+<DriveLetter>:/
     apps/
         app1/
         app2/
